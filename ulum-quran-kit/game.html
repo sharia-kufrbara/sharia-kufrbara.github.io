@@ -1,0 +1,546 @@
+<title>مغامرة علوم القرآن</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=El+Messiri:wght@600;700&family=Tajawal:wght@500;700;800;900&display=swap">
+<style>
+/* Layout: one-screen arcade console. A night-sky board with a winding path of 10 stations, then full-screen rounds. Single dark look by design. */
+:root{
+  --sky:#0F0C2E; --sky2:#1C1250; --panel:rgba(255,255,255,.07); --line:rgba(255,255,255,.16);
+  --ink:#F4F1FF; --mute:#B8B2DA; --gold:#FFC83D; --mint:#34D399; --rose:#FF5D73; --sea:#38BDF8;
+  --display:"El Messiri","Tajawal",system-ui,sans-serif; --body:"Tajawal",system-ui,sans-serif;
+  color-scheme:dark;
+}
+html,body{height:100%}
+body{margin:0;background:radial-gradient(1200px 700px at 80% -10%,#3B1D7A55,transparent),linear-gradient(180deg,var(--sky),var(--sky2));background-color:var(--sky);color:var(--ink);font-family:var(--body);font-size:17px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:12px;direction:rtl;overflow-x:hidden}
+#stars{position:fixed;inset:0;pointer-events:none;z-index:0}
+.app{position:relative;z-index:1;max-width:620px;margin:0 auto;display:flex;flex-direction:column;gap:14px;min-height:calc(100% - 24px)}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+button:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.brand{font-family:var(--display);font-size:1.25rem;font-weight:700;color:var(--gold)}
+.pills{display:flex;gap:8px;flex-wrap:wrap}
+.pill{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+.icon-btn{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:6px 10px;font-weight:800}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(2rem,8vw,3rem);margin:6px 0 0;text-wrap:balance;line-height:1.15}
+.lead{color:var(--mute);margin:0;line-height:1.7}
+.modes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.mode{background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:16px;text-align:right;display:flex;flex-direction:column;gap:6px;min-height:110px;transition:transform .15s,border-color .15s}
+.mode:hover{transform:translateY(-2px);border-color:var(--gold)}
+.mode b{font-size:1.15rem}
+.mode span{color:var(--mute);font-size:.92rem;line-height:1.5}
+.mode.hero{grid-column:1/-1;background:linear-gradient(135deg,#FFC83D22,#F472B622);border-color:#FFC83D66}
+.mode.hero b{font-family:var(--display);font-size:1.5rem;color:var(--gold)}
+/* map */
+.map{position:relative;display:flex;flex-direction:column;gap:10px;padding-bottom:10px}
+.station{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:10px 14px;text-align:right;width:86%}
+.station:nth-child(odd){align-self:flex-start}
+.station:nth-child(even){align-self:flex-end}
+.station .num{flex:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-weight:900;font-size:1.2rem;color:#14102E}
+.station .txt{flex:1;min-width:0}
+.station .txt b{display:block;font-size:1.05rem}
+.station .txt small{color:var(--mute)}
+.stars{letter-spacing:2px;color:#555077;font-size:1.1rem;white-space:nowrap}
+.stars i{font-style:normal;color:var(--gold)}
+.tag{display:inline-block;font-size:.75rem;font-weight:900;background:var(--gold);color:#14102E;border-radius:6px;padding:1px 6px;margin-inline-start:6px;vertical-align:middle}
+/* play */
+.hud{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.hearts{font-size:1.3rem;letter-spacing:2px}
+.timer{height:10px;background:var(--panel);border-radius:6px;overflow:hidden}
+.timer>i{display:block;height:100%;background:var(--mint);transform-origin:right;transition:background .3s}
+.qcard{background:var(--panel);border:1px solid var(--line);border-radius:24px;padding:22px 18px;display:flex;flex-direction:column;gap:6px}
+.qcat{color:var(--gold);font-weight:800;font-size:.9rem}
+.qtext{font-size:1.4rem;font-weight:800;line-height:1.55;text-wrap:balance}
+.opts{display:grid;gap:10px}
+.opt{display:flex;align-items:center;gap:12px;text-align:right;background:var(--panel);border:2px solid var(--line);border-radius:16px;padding:12px 14px;font-size:1.1rem;font-weight:700;transition:transform .1s,background .2s,border-color .2s}
+.opt:hover:not(:disabled){border-color:var(--gold)}
+.opt .k{flex:none;width:34px;height:34px;border-radius:50%;background:var(--gold);color:#14102E;display:grid;place-items:center;font-weight:900}
+.opt.ok{background:#16A34A;border-color:#86EFAC}
+.opt.ok .k{background:#fff}
+.opt.bad{background:#7F1D2D;border-color:var(--rose);animation:shake .35s}
+.opt.dim{opacity:.4}
+.opt:disabled{cursor:default}
+.note{color:var(--mint);font-weight:700;min-height:1.6em;line-height:1.6}
+.combo{font-weight:900;color:var(--gold)}
+@keyframes shake{25%{transform:translateX(6px)}50%{transform:translateX(-6px)}75%{transform:translateX(4px)}}
+@keyframes pop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+.big{font-family:var(--display);font-size:clamp(2.2rem,10vw,3.4rem);font-weight:700;color:var(--gold);text-align:center;animation:pop .5s}
+.result{display:flex;flex-direction:column;gap:12px;text-align:center}
+.result .stars{font-size:2.6rem}
+.row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+.btn{background:var(--gold);color:#14102E;font-weight:900;border-radius:14px;padding:12px 18px;font-size:1.05rem}
+.btn.ghost{background:var(--panel);color:var(--ink);border:1px solid var(--line)}
+.wrong{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:10px 12px;text-align:right;line-height:1.6}
+.wrong b{color:var(--mint)}
+/* match */
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.cardm{background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:12px 10px;min-height:64px;font-weight:800;line-height:1.4;transition:all .2s}
+.cardm.book{border-color:#A78BFA88}
+.cardm.auth{border-color:#38BDF888;color:#BDE8FF}
+.cardm.sel{border-color:var(--gold);background:#FFC83D22;transform:scale(1.03)}
+.cardm.gone{opacity:0;transform:scale(.8);pointer-events:none}
+.cardm.bad{border-color:var(--rose);animation:shake .35s}
+.colh{color:var(--mute);font-weight:800;text-align:center;font-size:.9rem}
+/* swipe */
+.sura{font-family:var(--display);font-size:clamp(2.4rem,12vw,3.6rem);text-align:center;font-weight:700;padding:30px 0;animation:pop .3s}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.two .btn{font-size:1.4rem;padding:22px 10px}
+.btn.sea{background:var(--sea)}
+.inp{flex:1;min-width:0;background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:12px 14px;color:var(--ink);font:inherit;font-size:1.1rem}
+.inp:focus{outline:none;border-color:var(--gold)}
+.me{display:flex;flex-direction:column;gap:8px;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:12px 14px}
+.me b{font-size:1.2rem}.me small{display:block;color:var(--mute)}
+.herorow{display:flex;align-items:center;gap:14px;justify-content:space-between}.herorow>div:first-child{display:flex;flex-direction:column;gap:6px;min-width:0}
+.ring{flex:none;width:92px;height:92px;border-radius:50%;display:grid;place-content:center;text-align:center;background:radial-gradient(closest-side,var(--sky2) 78%,transparent 79%),conic-gradient(var(--c) calc(var(--p)*1%),rgba(255,255,255,.12) 0)}
+.ring b{font-size:1.3rem;color:var(--ink)}.ring small{color:var(--mute);font-size:.8rem}
+.explain{background:#2A1036;border:2px solid var(--rose);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:8px;animation:pop .35s}
+.explain .ans{font-family:var(--display);font-size:1.7rem;color:var(--mint);font-weight:700;line-height:1.4}
+.qcard.again{border-color:var(--rose)}
+.lbrow{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:10px 12px}
+.lbrow.me{border-color:var(--gold);background:#FFC83D1A}
+.lbpos{flex:none;width:34px;text-align:center;font-weight:900;font-size:1.2rem}
+.lbname{flex:1;min-width:0;font-weight:800}.lbname small{display:block;color:var(--mute);font-weight:500}
+.lbxp{font-weight:900;color:var(--gold);font-variant-numeric:tabular-nums;white-space:nowrap}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:5}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<canvas id="stars"></canvas><canvas id="fx"></canvas>
+<div class="app" id="app"></div>
+
+<script>
+var BOOKS=[
+ ["فنون الأفنان في عجائب علوم القرآن","ابن الجوزي"],
+ ["المرشد الوجيز","أبو شامة المقدسي"],
+ ["البرهان في علوم القرآن (44 نوعًا، 4 أجزاء)","الزركشي"],
+ ["مواقع العلوم في مواقع النجوم","البلقيني"],
+ ["الإتقان في علوم القرآن","السيوطي"],
+ ["البرهان في علوم القرآن (أول ظهور للمصطلح، ت 430هـ)","علي بن إبراهيم الحوفي"],
+ ["تفسير المنار","محمد عبده"],
+ ["إعجاز القرآن","الرافعي"],
+ ["التصوير الفني في القرآن","سيد قطب"],
+ ["مشاهد يوم القيامة","سيد قطب"],
+ ["في ظلال القرآن","سيد قطب"],
+ ["التبيان في علوم القرآن","طاهر الجزائري"],
+ ["مناهل العرفان في علوم القرآن","الزرقاني"],
+ ["المدخل لدراسة القرآن الكريم","محمد أبو شهبة"],
+ ["مباحث في علوم القرآن","صبحي الصالح"],
+ ["إتقان البرهان في علوم القرآن","فضل حسن عباس"],
+ ["العُجاب في بيان الأسباب","ابن حجر العسقلاني"],
+ ["لباب النقول في أسباب النزول","السيوطي"],
+ ["صحيح أسباب النزول","إبراهيم العلي"],
+ ["أسباب النزول (تحقيق أحمد صقر، ت 468هـ)","الواحدي"],
+ ["أسباب النزول (الكتاب المفقود)","علي بن المديني"],
+ ["طيبة النشر في القراءات العشر","ابن الجزري"],
+ ["حرز الأماني","الشاطبي"],
+ ["الإتحافات السنية بالأحاديث القدسية","المناوي"],
+ ["رسم المصحف (700 صفحة)","غانم قدوري"],
+ ["معجم علوم القرآن","إبراهيم محمد الجرمي"],
+ ["كيف نتعامل مع القرآن","القرضاوي"]
+];
+var AUTHORS=uniq(BOOKS.map(function(b){return b[1]}));
+var QURRA=[
+ ["نافع","قالون وورش"],["ابن كثير المكي","البزّي وقنبل"],["أبو عمرو البصري","الدوري والسوسي"],
+ ["ابن عامر الشامي","هشام وابن ذكوان"],["عاصم الكوفي","شعبة وحفص"],["حمزة","خلف وخلّاد"],
+ ["الكسائي","الليث والدوري"],["أبو جعفر المدني","عيسى الحذّاء وابن جمّاز"],
+ ["يعقوب البصري","رويس وروح"],["خلف العاشر","إسحاق الورّاق وإدريس الحدّاد"]
+];
+var RAWI=[["قالون","نافع"],["ورش","نافع"],["البزّي","ابن كثير"],["قنبل","ابن كثير"],["السوسي","أبو عمرو البصري"],
+ ["هشام","ابن عامر"],["ابن ذكوان","ابن عامر"],["شعبة","عاصم"],["حفص","عاصم"],["خلّاد","حمزة"],["الليث","الكسائي"],
+ ["عيسى الحذّاء","أبو جعفر"],["ابن جمّاز","أبو جعفر"],["رويس","يعقوب"],["روح","يعقوب"],["إسحاق الورّاق","خلف العاشر"],["إدريس الحدّاد","خلف العاشر"]];
+var IMAMS=["نافع","ابن كثير","أبو عمرو البصري","ابن عامر","عاصم","حمزة","الكسائي","أبو جعفر","يعقوب","خلف العاشر"];
+var MADANI=["البقرة","آل عمران","النساء","المائدة","الأنفال","التوبة","النور","الأحزاب","محمد","الفتح","الحجرات","الحديد","المجادلة","الحشر","الممتحنة","الجمعة","المنافقون","الطلاق","التحريم","النصر"];
+var MAKKI=["الأنعام","الأعراف","يونس","هود","يوسف","إبراهيم","الحجر","النحل","الإسراء","الكهف","مريم","طه","الأنبياء","المؤمنون","الفرقان","الشعراء","النمل","القصص","العنكبوت","الروم","لقمان","السجدة","سبأ","فاطر","يس","الصافات","الزمر","غافر","فصلت","الشورى","الزخرف","الدخان","الأحقاف","ق","الذاريات","الطور","النجم","القمر","الواقعة","الملك","القلم","الحاقة","المعارج","نوح","المزمل","المدثر","القيامة","النبأ","عبس","الأعلى","الغاشية","الفجر","الضحى","العلق","الكوثر","الكافرون"];
+
+/* handwritten MCQs: [category, question, correct, wrong1, wrong2, wrong3, note] */
+var MCQ=[
+ ["الكتب","في أي قرن ظهر مصطلح «علوم القرآن» حسب الزرقاني؟","القرن الخامس","القرن الثاني","القرن السابع","القرن الثالث","في كتاب البرهان للحوفي ت 430هـ"],
+ ["الكتب","كم نوعًا من علوم القرآن في «البرهان» للزركشي؟","44","52","88","80",""],
+ ["الكتب","كم نوعًا جمع البلقيني في «مواقع العلوم»؟","52","44","88","99",""],
+ ["الكتب","كم نوعًا في «الإتقان» للسيوطي؟","88","44","52","100","ضعف البرهان"],
+ ["الكتب","من العالم الذي ضربه حنابلة متعصبون حتى أغمي عليه؟","أبو شامة المقدسي","ابن الجوزي","الزركشي","البلقيني",""],
+ ["الكتب","سنة وفاة السيوطي:","911هـ","794هـ","824هـ","665هـ",""],
+ ["الكتب","سنة وفاة الزركشي:","794هـ","597هـ","911هـ","430هـ",""],
+ ["الكتب","سنة وفاة ابن الجوزي:","597هـ","665هـ","468هـ","794هـ",""],
+ ["الكتب","إلى أي سورة وصل ابن حجر في «العُجاب»؟","النساء","البقرة","المائدة","الناس",""],
+ ["الكتب","من حقق أفضل طبعة لأسباب النزول للواحدي؟","أحمد صقر","عبد الحكيم الأنيس","غانم قدوري","صبحي الصالح",""],
+ ["الكتب","أول من ألّف في أسباب النزول (وكتابه مفقود):","علي بن المديني","الواحدي","السيوطي","ابن حجر","وهو شيخ البخاري"],
+ ["الكتب","من دوّن في الناسخ والمنسوخ في القرن الثاني؟","القاسم بن سلّام","وكيع بن الجراح","شعبة","علي بن المديني",""],
+ ["الكتب","كم اسمًا للقرآن ذكر الزركشي؟","99","55","88","44",""],
+ ["الكتب","كم آية منسوخة عند فضل عباس؟","4","21","40","7","وعند السيوطي 21"],
+ ["التعريف والنزول","كم مدة نزول القرآن على النبي ﷺ؟","23 سنة","20 سنة","13 سنة","25 سنة",""],
+ ["التعريف والنزول","أي التنزلات الثلاثة مختلف فيه؟","النزول إلى بيت العزة","النزول إلى اللوح المحفوظ","النزول على قلب النبي ﷺ","لا خلاف في أي منها",""],
+ ["التعريف والنزول","أين بيت العزة؟","في السماء الدنيا","في السماء السابعة","في اللوح المحفوظ","في مكة",""],
+ ["التعريف والنزول","أول ما نزل من القرآن مطلقًا:","أول خمس آيات من العلق","يا أيها المدثر","الفاتحة","يا أيها المزمل","حديث عائشة"],
+ ["التعريف والنزول","كيف وُفّق بين حديث عائشة وحديث جابر؟","المدثر أول ما نزل بعد فتور الوحي","حديث جابر ضعيف","المدثر أول ما نزل في المدينة","العلق نزلت بعد المدثر",""],
+ ["التعريف والنزول","من قال إن «القرآن» اسم علم غير مشتق وغير مهموز؟","الشافعي","الزجّاج","اللحياني","الفرّاء",""],
+ ["التعريف والنزول","من قال إنه مشتق من القَرء بمعنى الجمع؟","الزجّاج","الأشعري","اللحياني","الشافعي",""],
+ ["التعريف والنزول","من قال إنه مشتق من القرائن؟","الفرّاء","الأشعري","الزجّاج","اللحياني",""],
+ ["التعريف والنزول","عند أبي شامة، لفظ «أنزل» يدل على:","النزول جملة واحدة","النزول المفرّق","النزول في مكة","النزول ليلًا",""],
+ ["التعريف والنزول","ما معنى «ال» في «القرآن»؟","للمح الأصل","للتعريف","للجنس","زائدة",""],
+ ["القرآن والحديث","الحديث القدسي:","معناه من الله ولفظه من النبي ﷺ","لفظه ومعناه من الله","لفظه ومعناه من النبي ﷺ","لفظه من جبريل",""],
+ ["القرآن والحديث","الحديث النبوي هو ما أضيف إلى النبي ﷺ من:","قول أو فعل أو تقرير أو صفة","قول فقط","قول أو فعل فقط","قول أو وحي",""],
+ ["القرآن والحديث","أي مما يلي ليس من الفروق بين القرآن والحديث القدسي؟","القرآن مدني والقدسي مكي","القرآن معجز والقدسي غير معجز","القرآن كله متواتر والقدسي أكثره آحاد","القرآن متعبد بتلاوته دون القدسي",""],
+ ["القرآن والحديث","كم حديثًا قدسيًا في «الإتحافات السنية» للمناوي؟","272","99","700","88",""],
+ ["أسباب النزول","سبب النزول اصطلاحًا:","ما نزل قرآن بشأنه وقت وقوعه كحادثة أو سؤال","كل قصة ذُكرت في القرآن","ما نزل في مكة قبل الهجرة","تفسير الصحابي للآية",""],
+ ["أسباب النزول","كيف يُعرف سبب النزول؟","عن طريق الصحابة، ولا مدخل للاجتهاد فيه","بالاجتهاد والرأي","من سياق الآيات فقط","من كتب التاريخ",""],
+ ["أسباب النزول","حكم سبب النزول إن صح:","حكم المرفوع","حكم الموقوف دائمًا","حكم المقطوع","اجتهاد صحابي",""],
+ ["أسباب النزول","من نصّ على أن سبب النزول له حكم المرفوع؟","الحاكم النيسابوري وابن الصلاح","الواحدي والسيوطي","الزركشي والبلقيني","ابن حجر والشافعي",""],
+ ["أسباب النزول","«سُئل النبي ﷺ عن كذا فنزلت الآية». هذه صيغة:","صريحة (فاء التعقيب)","غير صريحة","ضعيفة","تفسيرية",""],
+ ["أسباب النزول","«نزلت الآية في كذا». هذه صيغة:","غير صريحة","صريحة","مرفوعة قطعًا","مردودة",""],
+ ["أسباب النزول","﴿يسألونك عن الروح﴾ سؤال عن:","حاضر","ماضٍ","مستقبل","حكم",""],
+ ["أسباب النزول","﴿يسألونك عن ذي القرنين﴾ سؤال عن:","ماضٍ","حاضر","مستقبل","حكم",""],
+ ["أسباب النزول","مثال فائدة «معرفة حكمة التشريع»:","آيات الظهار وقصة خولة بنت ثعلبة","آية الصفا والمروة","تحويل القبلة","آية الروح",""],
+ ["أسباب النزول","مثال فائدة «توضيح المعنى ورفع الإشكال»:","آية الصفا والمروة (عروة وعائشة)","آيات الظهار","آية الأنفال","آية الساعة",""],
+ ["أسباب النزول","﴿لا تقربوا الصلاة وأنتم سكارى﴾ سببها من نوع:","خطأ فاحش","خصومة","موافقة تمنٍّ","سؤال عن حكم",""],
+ ["أسباب النزول","أي مما يلي ليس من موافقات عمر الثلاث؟","تحريم الخمر","مقام إبراهيم","الحجاب","﴿عسى ربه إن طلقكن﴾",""],
+ ["المكي والمدني","الراجح في التفريق بين المكي والمدني اعتبار:","الزمان","المكان","المخاطَب","الموضوع",""],
+ ["المكي والمدني","عدد السور المدنية المتفق عليها عند السيوطي:","20","12","28","82",""],
+ ["المكي والمدني","عدد السور المختلف فيها:","12","20","7","10",""],
+ ["المكي والمدني","أول ما نزل بالمدينة:","البقرة","الأنفال","آل عمران","النساء",""],
+ ["المكي والمدني","مثال سورة مكية فيها آيات مدنية:","الحج","البقرة","النور","الحديد",""],
+ ["جمع القرآن","من أشار على أبي بكر بجمع القرآن؟","عمر بن الخطاب","حذيفة بن اليمان","زيد بن ثابت","علي بن أبي طالب",""],
+ ["جمع القرآن","من أشار على عثمان بجمع الناس على مصحف واحد؟","حذيفة بن اليمان","عمر بن الخطاب","أبيّ بن كعب","ابن مسعود",""],
+ ["جمع القرآن","سبب الجمع في عهد أبي بكر:","الخوف من ضياع القرآن بموت الحفظة","اختلاف الناس في القراءة","كثرة الأعاجم","ضياع الصحف",""],
+ ["جمع القرآن","سبب الجمع في عهد عثمان:","حسم اختلاف المسلمين في القراءة","موت الحفظة في اليمامة","طلب الصحابة التشكيل","تلف الصحف",""],
+ ["جمع القرآن","الحصر في حديث «لم يجمع القرآن إلا أربعة»:","نسبي","حقيقي","منسوخ","موضوع","سببه قصة بين الأوس والخزرج"],
+ ["جمع القرآن","عدد المصاحف التي نسخها عثمان على الراجح:","8","4","7","6",""],
+ ["جمع القرآن","عثمان جمع الناس على:","رسم واحد يوافق الأحرف السبعة","حرف واحد فقط","قراءة حفص","لغة هذيل",""],
+ ["جمع القرآن","عند من وُجد آخر سورة التوبة مكتوبًا؟","أبي خزيمة الأنصاري","حذيفة بن اليمان","أبيّ بن كعب","ابن مسعود",""],
+ ["جمع القرآن","أي مما يلي ليس من أسباب اختيار زيد؟","كونه أكبر الصحابة سنًّا","كونه شابًّا","كونه عاقلًا لا يُتهم","كونه كاتب وحي",""],
+ ["جمع القرآن","كم قُتل من الحفظة في اليمامة؟","70","40","23","100",""],
+ ["جمع القرآن","عند الاختلاف أمر عثمان بالكتابة بلسان:","قريش","هذيل","تميم","الأنصار",""],
+ ["السور والآيات","المفصّل يبدأ من سورة:","الحجرات","ق","محمد","الملك","قول الزركشي والجمهور"],
+ ["السور والآيات","أواسط المفصل:","من الطارق إلى البينة","من الحجرات إلى البروج","من الزلزلة إلى الناس","من ق إلى الضحى",""],
+ ["السور والآيات","قصار المفصل تبدأ من:","الزلزلة","الضحى","الطارق","البينة",""],
+ ["السور والآيات","السابعة من السبع الطوال على الراجح:","براءة","يونس","الأنفال","الكهف",""],
+ ["السور والآيات","«أعطيت المئين مكان ...»","الإنجيل","التوراة","الزبور","الصحف",""],
+ ["السور والآيات","«أعطيت المثاني مكان ...»","الزبور","التوراة","الإنجيل","المفصل",""],
+ ["السور والآيات","عدد الآيات بالعد الكوفي:","6236","6204","6214","6217",""],
+ ["السور والآيات","عدد الآيات بالعد البصري:","6204","6210","6236","6217",""],
+ ["السور والآيات","عدد الآيات بالعد المكي:","6210","6204","6214","6236",""],
+ ["السور والآيات","السبب الصحيح لاختلاف عدّ الآيات:","وقف النبي ﷺ على رؤوس الآيات ووصله أحيانًا","الخلاف في البسملة","اختلاف المصاحف العثمانية","اختلاف اللهجات",""],
+ ["السور والآيات","من قال: ترتيب السور أكثره توقيفي وبعضه اجتهادي؟","ابن عطية","الزركشي","السيوطي","ابن الجزري","ولا دليل عليه"],
+ ["السور والآيات","قول الجمهور في ترتيب السور:","توقيفي","اجتهادي","بعضه توقيفي","لا يُعرف",""],
+ ["السور والآيات","الاسم الاجتهادي لسورة الحجرات:","سورة الآداب","سورة الأخلاق","سورة النساء الصغرى","سورة المؤمنين",""],
+ ["السور والآيات","اسم توقيفي آخر لسورة الإسراء:","بنو إسرائيل","سبحان الذي","الزهراء","براءة",""],
+ ["السور والآيات","السورة من «سور المدينة» بمعنى:","الإحاطة","الارتفاع","البقية","القطعة",""],
+ ["الرسم العثماني","﴿الصلوة﴾ و﴿الزكوة﴾ من قاعدة:","البدل","الحذف","الزيادة","الهمز",""],
+ ["الرسم العثماني","الواو في ﴿أولئك﴾ من قاعدة:","الزيادة","الحذف","البدل","الوصل والفصل",""],
+ ["الرسم العثماني","الحروف المحذوفة في قاعدة الحذف هي:","حروف المد","حروف الحلق","الحروف المقطعة","حروف القلقلة",""],
+ ["الرسم العثماني","قراءة ﴿مالك﴾ بالألف توافق الرسم:","احتمالًا","تحقيقًا","لا توافقه","شذوذًا",""],
+ ["الرسم العثماني","قراءة عاصم ﴿وما يخدعون﴾ توافق الرسم:","تحقيقًا","احتمالًا","لا توافقه","تقديرًا",""],
+ ["الرسم العثماني","من جعل «المقطوع والموصول» من علوم التجويد؟","ابن الجزري","الشاطبي","السيوطي","الزركشي",""],
+ ["الرسم العثماني","لماذا رُسمت ﴿بأييد﴾ بياءين عند السيوطي؟","لأن السماء بُنيت بقوة زائدة","للدلالة على الجمع","على لغة هذيل","للتفريق بين قراءتين",""],
+ ["الرسم العثماني","من أجاز طباعة المصحف بغير الرسم العثماني؟","المراغي","فضل عباس","السيوطي","ابن الجزري",""],
+ ["الرسم العثماني","﴿يوم يأتِ﴾ بحذف الياء رُسمت على لغة:","هذيل","قريش","تميم","طيّئ",""],
+ ["الرسم العثماني","﴿الصراط﴾ بالصاد لغة:","قريش","هذيل","جمهور العرب","تميم","وبالسين لغة الجمهور"],
+ ["الرسم العثماني","كم عدد قواعد الرسم العثماني؟","6","5","7","4",""],
+ ["ترجمة القرآن","حكم الترجمة الحرفية للقرآن:","لا تجوز","جائزة","واجبة","مكروهة فقط",""],
+ ["ترجمة القرآن","حكم الترجمة التفسيرية:","جائزة","لا تجوز","تبطل الصلاة بها خارجها","محرمة بالإجماع",""],
+ ["ترجمة القرآن","قول أبي حنيفة في القراءة بالترجمة في الصلاة:","أجازها للأعجمي ثم رجع","منعها مطلقًا من البداية","أوجبها على الأعجمي","أجازها للعربي فقط",""],
+ ["ترجمة القرآن","قول ابن حزم فيمن قرأ بغير العربية في الصلاة:","تبطل صلاته","تصح صلاته","تصح مع الكراهة","تصح للعاجز",""],
+ ["الأحرف والقراءات","هل الأحرف السبعة هي القراءات السبع؟","لا، الأحرف أعم ونتج عنها القراءات العشر","نعم هي نفسها","نعم مع زيادة ثلاث","لا علاقة بينهما إطلاقًا",""],
+ ["الأحرف والقراءات","على كم قول اختلف العلماء في معنى الأحرف السبعة؟","40","7","10","35",""],
+ ["الأحرف والقراءات","من نصّ على أن نزول القرآن على سبعة أحرف متواتر؟","ابن الجزري","الشاطبي","الزركشي","الواحدي",""],
+ ["الأحرف والقراءات","الصحابي الذي سمعه عمر يقرأ على حروف لم يعرفها:","هشام بن حكيم","أبيّ بن كعب","زيد بن ثابت","حذيفة",""],
+ ["الأحرف والقراءات","المراد بالحرف في «الأحرف السبعة»:","الوجه والطريقة","الحرف الهجائي","الطرف","اللغة فقط",""],
+ ["الأحرف والقراءات","«والعدد منها مراد» أي:","السبعة عدد حقيقي لا للتكثير","السبعة للتكثير","العدد غير مقصود","العدد سبعون",""],
+ ["الأحرف والقراءات","أي مما يلي ليس من شروط القراءة الصحيحة؟","أن تكون بلغة قريش","موافقة العربية ولو بوجه","موافقة الرسم ولو احتمالًا","التواتر",""],
+ ["الأحرف والقراءات","كلمة «جبريل» قُرئت على كم وجه؟","5","3","7","2",""],
+ ["الأحرف والقراءات","الحكمة من الأحرف السبعة:","التخفيف والتيسير","التعجيز","اختبار الحفظ","تكثير الثواب فقط",""],
+ ["الأحرف والقراءات","«رواية حفص» تُنسب إلى:","تلميذ الإمام","الإمام نفسه","الآخذ عن الراوي","كاتب المصحف",""],
+ ["الأحرف والقراءات","«طريق الطيبة» المراد بها كتاب:","طيبة النشر لابن الجزري","حرز الأماني للشاطبي","الإتقان للسيوطي","المقنع",""],
+ ["الأحرف والقراءات","متى ظهر جيل القراء الذين نُسبت إليهم القراءات؟","القرن الثاني","القرن الأول","القرن الخامس","القرن الرابع",""],
+ ["الأحرف والقراءات","الراوي الذي يتكرر عند قارئين (أبي عمرو والكسائي):","الدوري","السوسي","خلف","هشام",""],
+ ["الأحرف والقراءات","أكثر قراءة أثيرت حولها إشكالات لغوية:","قراءة حمزة","قراءة عاصم","قراءة نافع","قراءة يعقوب","مثل ﴿والأرحامِ﴾ بالجر، وهي صحيحة"]
+];
+var EXTRA=[
+ ["ترجمة القرآن","قول الشافعي في قراءة الترجمة في الصلاة:","لا تجوز","تجوز للأعجمي","تجوز مطلقًا","تجوز في النافلة",""],
+ ["ترجمة القرآن","الترجمة التفسيرية:","جائزة وليست قرآنًا","لا تجوز","هي قرآن","تجوز بها الصلاة",""],
+ ["ترجمة القرآن","الترجمة قسمان:","حرفية وتفسيرية","لفظية ومعنوية","مكية ومدنية","كاملة وناقصة",""],
+ ["القرآن والحديث","القرآن الكريم لفظه ومعناه من:","الله تعالى","النبي ﷺ","جبريل","الصحابة",""],
+ ["القرآن والحديث","الحديث التوفيقي:","اجتهاد من النبي ﷺ يقرّه الوحي","مضمونه من الوحي","لفظه من الله","حديث قدسي",""],
+ ["القرآن والحديث","أكثر الحديث القدسي:","آحاد","متواتر","موضوع","معجز",""],
+ ["التعريف والنزول","آخر ما نزل على المشهور:","﴿واتقوا يومًا ترجعون فيه إلى الله﴾","﴿اقرأ باسم ربك﴾","﴿يا أيها المدثر﴾","﴿إذا جاء نصر الله﴾",""],
+ ["التعريف والنزول","أول ما نزل بعد فتور الوحي:","المدثر","العلق","الفاتحة","المزمل","حديث جابر"],
+ ["التعريف والنزول","ليس من أشهر خمسة أسماء للقرآن:","المصحف","الفرقان","التنزيل","الذكر",""]
+];
+MCQ=MCQ.concat(EXTRA);
+var LEVELS=[
+ {c:"الكتب",t:"الكتب ومَن كتبها",s:1,col:"#FFC83D"},
+ {c:"التعريف والنزول",t:"تعريف القرآن ونزوله",s:1,col:"#34D399"},
+ {c:"القرآن والحديث",t:"القرآن والقدسي والنبوي",s:1,col:"#60A5FA"},
+ {c:"أسباب النزول",t:"أسباب النزول",s:0,col:"#F472B6"},
+ {c:"المكي والمدني",t:"المكي والمدني",s:0,col:"#A78BFA"},
+ {c:"جمع القرآن",t:"جمع القرآن",s:0,col:"#FB923C"},
+ {c:"السور والآيات",t:"السور والآيات",s:0,col:"#22D3EE"},
+ {c:"الرسم العثماني",t:"الرسم العثماني",s:0,col:"#F87171"},
+ {c:"ترجمة القرآن",t:"ترجمة القرآن",s:1,col:"#4ADE80"},
+ {c:"الأحرف والقراءات",t:"الأحرف السبعة والقراءات",s:0,col:"#FACC15"}
+];
+function uniq(a){return a.filter(function(v,i){return a.indexOf(v)===i})}
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function pick(a,n,ex){return shuffle(a.filter(function(v){return ex.indexOf(v)<0})).slice(0,n)}
+var AUTHORS=uniq(BOOKS.map(function(b){return b[1]}));
+var TITLES=BOOKS.map(function(b){return b[0]});
+
+/* ---------- storage (per viewer convenience only) ---------- */
+var SAVE={stars:{},xp:0,wrong:[],best:{},box:{},seen:{},name:"",pid:""};
+try{var raw=localStorage.getItem("ulum-game");if(raw)SAVE=Object.assign(SAVE,JSON.parse(raw))}catch(e){}
+function persist(){try{localStorage.setItem("ulum-game",JSON.stringify(SAVE))}catch(e){}}
+
+/* ---------- question pools ---------- */
+function mk(c,q,a,o,n,fixed){return{c:c,q:q,a:a,o:fixed?o:shuffle(o),n:n||""}}
+function pool(cat){
+  var out=MCQ.filter(function(m){return m[0]===cat}).map(function(m){return mk(m[0],m[1],m[2],[m[2],m[3],m[4],m[5]],m[6])});
+  if(cat==="الكتب"){
+    BOOKS.forEach(function(b){out.push(mk(cat,"مَن مؤلّف «"+b[0]+"»؟",b[1],[b[1]].concat(pick(AUTHORS,3,[b[1]]))))});
+    AUTHORS.forEach(function(a){var own=BOOKS.filter(function(b){return b[1]===a}).map(function(b){return b[0]});
+      out.push(mk(cat,"أيّ هذه الكتب من تأليف "+a+"؟",own[0],[own[0]].concat(pick(TITLES,3,own))))});
+  }
+  if(cat==="المكي والمدني"){
+    shuffle(MADANI).slice(0,8).forEach(function(s){out.push(mk(cat,"سورة "+s+":","مدنية",["مكية","مدنية"],"من العشرين المدنية",true))});
+    shuffle(MAKKI).slice(0,8).forEach(function(s){out.push(mk(cat,"سورة "+s+":","مكية",["مكية","مدنية"],"ليست من العشرين المدنية",true))});
+  }
+  if(cat==="الأحرف والقراءات"){
+    var pairs=QURRA.map(function(q){return q[1]});
+    QURRA.forEach(function(q){out.push(mk(cat,"مَن راويا "+q[0]+"؟",q[1],[q[1]].concat(pick(pairs,3,[q[1]]))))});
+    RAWI.forEach(function(r){out.push(mk(cat,"الراوي «"+r[0]+"» يروي عن:",r[1],[r[1]].concat(pick(IMAMS,3,[r[1]]))))});
+  }
+  return out;
+}
+
+/* ---------- sound ---------- */
+var AC=null,SOUND=true;
+try{SOUND=localStorage.getItem("ulum-sound")!=="0"}catch(e){}
+function tone(f,d,type,g,delay){if(!SOUND)return;try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();var t=AC.currentTime+(delay||0),o=AC.createOscillator(),v=AC.createGain();
+  o.type=type||"sine";o.frequency.setValueAtTime(f,t);v.gain.setValueAtTime(g||.12,t);v.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(v);v.connect(AC.destination);o.start(t);o.stop(t+d)}catch(e){}}
+var SFX={ok:function(){tone(660,.12,"triangle");tone(990,.18,"triangle",.12,.09)},bad:function(){tone(160,.3,"sawtooth",.07)},tick:function(){tone(1200,.04,"square",.04)},
+  win:function(){[523,659,784,1046].forEach(function(f,i){tone(f,.25,"triangle",.12,i*.11)})},tap:function(){tone(520,.05,"sine",.06)}};
+
+/* ---------- confetti + starfield ---------- */
+var fx=document.getElementById("fx"),fc=fx.getContext("2d"),bits=[];
+var REDUCED=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;
+function sizeFx(){fx.width=innerWidth;fx.height=innerHeight;var s=document.getElementById("stars");s.width=innerWidth;s.height=innerHeight;var g=s.getContext("2d");g.clearRect(0,0,s.width,s.height);
+  for(var i=0;i<90;i++){g.fillStyle="rgba(255,255,255,"+(.15+Math.random()*.5)+")";g.fillRect(Math.random()*s.width,Math.random()*s.height,2,2)}}
+addEventListener("resize",sizeFx);sizeFx();
+function confetti(n){if(REDUCED)return;var cols=["#FFC83D","#34D399","#60A5FA","#F472B6","#A78BFA","#FB923C"];
+  for(var i=0;i<(n||80);i++)bits.push({x:innerWidth/2,y:innerHeight*.35,vx:(Math.random()-.5)*14,vy:-Math.random()*14-4,r:Math.random()*6,c:cols[i%6],l:0});
+  if(bits.length===(n||80))requestAnimationFrame(stepFx)}
+function stepFx(){fc.clearRect(0,0,fx.width,fx.height);bits.forEach(function(b){b.vy+=.45;b.x+=b.vx;b.y+=b.vy;b.l++;fc.save();fc.translate(b.x,b.y);fc.rotate(b.l*.2+b.r);fc.fillStyle=b.c;fc.fillRect(-6,-3,12,6);fc.restore()});
+  bits=bits.filter(function(b){return b.y<fx.height+20&&b.l<200});if(bits.length)requestAnimationFrame(stepFx);else fc.clearRect(0,0,fx.width,fx.height)}
+
+/* ---------- tiny DOM helper ---------- */
+var app=document.getElementById("app");
+function h(tag,attrs,kids){var e=document.createElement(tag);for(var k in attrs||{}){if(k==="on")for(var ev in attrs.on)e.addEventListener(ev,attrs.on[ev]);else if(k==="html")e.innerHTML=attrs[k];else e.setAttribute(k,attrs[k])}
+  (kids||[]).forEach(function(c){if(c!=null)e.appendChild(typeof c==="string"?document.createTextNode(c):c)});return e}
+function txt(tag,cls,s){return h(tag,{class:cls},[s])}
+var timerId=null;function stopTimer(){if(timerId){clearInterval(timerId);timerId=null}}
+function totalStars(){var s=0;for(var k in SAVE.stars)s+=SAVE.stars[k];return s}
+function topbar(back){
+  var snd=h("button",{class:"icon-btn","aria-label":"الصوت",on:{click:function(){SOUND=!SOUND;try{localStorage.setItem("ulum-sound",SOUND?"1":"0")}catch(e){}snd.textContent=SOUND?"🔊":"🔇"}}},[SOUND?"🔊":"🔇"]);
+  return h("div",{class:"top"},[
+    back?h("button",{class:"icon-btn",on:{click:function(){stopTimer();home()}}},["→ الرئيسية"]):txt("div","brand","مغامرة علوم القرآن"),
+    h("div",{class:"pills"},[txt("span","pill","⭐ "+SAVE.xp),txt("span","pill",rank(SAVE.xp).name),snd])]);
+}
+function starStr(n){var s=h("span",{class:"stars","aria-label":n+" من 3 نجوم"});for(var i=0;i<3;i++)s.appendChild(i<n?h("i",{},["★"]):document.createTextNode("★"));return s}
+
+/* ---------- player, ranks, mastery ---------- */
+SAVE.box=SAVE.box||{};SAVE.seen=SAVE.seen||{};SAVE.name=SAVE.name||"";SAVE.pid=SAVE.pid||("p"+Math.random().toString(36).slice(2,10));persist();
+var RANKS=[[0,"مبتدئ"],[300,"طالب علم"],[800,"حافظ"],[1500,"متقن"],[2500,"علّامة"],[4000,"سيوطي العصر 👑"]];
+function rank(xp){var r=RANKS[0],n=null;for(var i=0;i<RANKS.length;i++){if(xp>=RANKS[i][0])r=RANKS[i];else{n=RANKS[i];break}}return{name:r[1],from:r[0],next:n}}
+function key(q){return q.q+"|"+q.a}
+function mastered(q){return (SAVE.box[key(q)]||0)>=2}
+function examPool(){
+  var nz=pool("التعريف والنزول").filter(function(q){return /نزل|نزول|مدة|المدثر|عائشة|التنزلات|بيت العزة|أنزل|أسماء/.test(q.q)});
+  return pool("الكتب").concat(pool("القرآن والحديث"),pool("ترجمة القرآن"),nz);
+}
+function uniqQ(a){var s={};return a.filter(function(q){var k=key(q);if(s[k])return false;s[k]=1;return true})}
+function masteryOf(list){list=uniqQ(list);var m=list.filter(mastered).length;return{m:m,n:list.length}}
+function weakList(){var all=examPool();LEVELS.forEach(function(L){all=all.concat(pool(L.c))});all=uniqQ(all);return all.filter(function(q){return SAVE.seen[key(q)]&&!mastered(q)})}
+
+/* ---------- leaderboard: live when the game runs on the class link (Apps Script) ---------- */
+var ONLINE=typeof google!=="undefined"&&google.script&&google.script.run;
+function pushScore(){if(!ONLINE||!SAVE.name)return;var em=masteryOf(examPool());
+  try{google.script.run.submitScore({pid:SAVE.pid,name:SAVE.name,xp:SAVE.xp,m:em.m,n:em.n})}catch(e){}}
+function board(){
+  stopTimer();app.textContent="";app.appendChild(topbar(true));
+  app.appendChild(h("h1",{},["جدول المتسابقين"]));
+  var box=h("div",{class:"opts"},[txt("p","lead","جارٍ التحميل…")]);app.appendChild(box);
+  function show(rows){box.textContent="";
+    if(!rows||!rows.length){box.appendChild(txt("p","lead","لا أحد بعد. كن الأول!"));return}
+    rows.sort(function(a,b){return b.xp-a.xp});
+    rows.forEach(function(r,i){var me=r.pid===SAVE.pid;var medal=["🥇","🥈","🥉"][i]||String(i+1);
+      box.appendChild(h("div",{class:"lbrow"+(me?" me":"")},[txt("span","lbpos",medal),h("span",{class:"lbname"},[r.name+(me?" (أنت)":""),h("small",{},[rank(r.xp).name+" · إتقان الامتحان "+r.m+"/"+r.n])]),txt("span","lbxp","⭐ "+r.xp)]))})}
+  if(ONLINE){pushScore();google.script.run.withSuccessHandler(show).withFailureHandler(function(){box.textContent="";box.appendChild(txt("p","lead","تعذّر تحميل الجدول. حاول بعد قليل."))}).getBoard()}
+  else{var em=masteryOf(examPool());show([{pid:SAVE.pid,name:SAVE.name||"أنت",xp:SAVE.xp,m:em.m,n:em.n}]);
+    box.appendChild(txt("p","lead","أسماء الزملاء تظهر في رابط المسابقة المشترك. هنا تظهر نتيجتك فقط."))}
+}
+function askName(then){
+  stopTimer();app.textContent="";app.appendChild(topbar(false));
+  app.appendChild(h("h1",{},["ما اسمك؟"]));
+  app.appendChild(txt("p","lead","يظهر اسمك في جدول المتسابقين مع زملائك في الكلية."));
+  var inp=h("input",{id:"pname",class:"inp",maxlength:"24",placeholder:"الاسم الكامل"});inp.value=SAVE.name;
+  var go=h("button",{class:"btn",on:{click:function(){var v=inp.value.trim();if(v.length<2){inp.focus();return}SAVE.name=v;persist();pushScore();(then||home)()}}},["ابدأ اللعب"]);
+  inp.addEventListener("keydown",function(e){if(e.key==="Enter")go.click()});
+  app.appendChild(h("div",{class:"row"},[inp,go]));setTimeout(function(){inp.focus()},50);
+}
+
+/* ---------- screens ---------- */
+function ring(m,n){var pct=n?m/n:0;return h("div",{class:"ring",style:"--p:"+Math.round(pct*100)+";--c:var(--gold)"},[h("b",{},[Math.round(pct*100)+"%"]),h("small",{},[m+"/"+n])])}
+function home(){
+  stopTimer();if(!SAVE.name)return askName(home);
+  app.textContent="";app.appendChild(topbar(false));
+  var rk=rank(SAVE.xp),em=masteryOf(examPool()),weak=weakList().length;
+  var prog=rk.next?(SAVE.xp-rk.from)/(rk.next[0]-rk.from):1;
+  app.appendChild(h("div",{class:"me"},[h("div",{},[h("b",{},["أهلًا "+SAVE.name]),h("small",{},["رتبتك: "+rk.name+(rk.next?" · بقي "+(rk.next[0]-SAVE.xp)+" نقطة إلى «"+rk.next[1]+"»":"")])]),
+    h("div",{class:"timer"},[h("i",{style:"transform:scaleX("+prog+");background:var(--gold)"})])]));
+  app.appendChild(h("div",{class:"modes"},[
+    h("button",{class:"mode hero",on:{click:function(){play({exam:true})}}},[h("div",{class:"herorow"},[h("div",{},[h("b",{},["مسار الامتحان"]),h("span",{},["الكتب ومؤلفوها، الترجمة، أول وآخر ما نزل، مدة النزول، القرآن والقدسي والنبوي. كل خطأ يعود حتى تتقنه."])]),ring(em.m,em.n)])]),
+    h("button",{class:"mode",on:{click:function(){if(weak)play({weak:true})}}},[h("b",{},["أخطائي ("+weak+")"]),h("span",{},[weak?"أسئلة لم تُتقنها بعد. لا تنم قبل أن تصبح صفرًا":"لا أخطاء معلّقة. ممتاز!"])]),
+    h("button",{class:"mode",on:{click:board}},[h("b",{},["جدول المتسابقين"]),h("span",{},["أنت وزملاؤك في الكلية"])]),
+    h("button",{class:"mode",on:{click:function(){match(0)}}},[h("b",{},["مطابقة الكتب"]),h("span",{},["27 كتابًا ومؤلفوها في 5 جولات"])]),
+    h("button",{class:"mode",on:{click:map}},[h("b",{},["كل المادة"]),h("span",{},["عشر مراحل لباقي المواضيع"])]),
+    h("button",{class:"mode",on:{click:swipe}},[h("b",{},["مكية أم مدنية؟"]),h("span",{},["45 ثانية · أفضل نتيجة "+(SAVE.best.swipe||0)])]),
+    h("button",{class:"mode",on:{click:function(){play({boss:true})}}},[h("b",{},["الوحش الأخير"]),h("span",{},["20 سؤالًا من كل شيء، 8 ثوانٍ"])])
+  ]));
+  app.appendChild(h("button",{class:"icon-btn",style:"align-self:flex-start",on:{click:function(){askName(home)}}},["تغيير الاسم"]));
+}
+function map(){
+  app.textContent="";app.appendChild(topbar(true));
+  app.appendChild(h("h1",{},["كل المادة"]));
+  var m=h("div",{class:"map"});
+  LEVELS.forEach(function(L,i){
+    var ms=masteryOf(pool(L.c));
+    var num=txt("span","num",String(i+1));num.style.background=L.col;
+    var t=h("span",{class:"txt"},[h("b",{},[L.t].concat(L.s?[h("span",{class:"tag"},["امتحان"])]:[])),txt("small","","أتقنت "+ms.m+" من "+ms.n)]);
+    m.appendChild(h("button",{class:"station",on:{click:function(){play({lvl:i})}}},[num,t,starStr(ms.n?Math.floor(ms.m/ms.n*3):0)]));
+  });
+  app.appendChild(m);
+}
+
+/* a round: a wrong answer comes back again and again until it is answered right twice */
+function pickRound(list,n){
+  list=uniqQ(list);
+  var weak=shuffle(list.filter(function(q){return SAVE.seen[key(q)]&&!mastered(q)})),fresh=shuffle(list.filter(function(q){return !SAVE.seen[key(q)]})),done=shuffle(list.filter(mastered));
+  return weak.concat(fresh,done).slice(0,n);
+}
+function play(opt){
+  var qs,label,secs=20;
+  if(opt.boss){var all=[];LEVELS.forEach(function(L){all=all.concat(shuffle(pool(L.c)).slice(0,3))});qs=shuffle(all).slice(0,20);label="الوحش الأخير";secs=8}
+  else if(opt.weak){qs=shuffle(weakList()).slice(0,12);label="أخطائي"}
+  else if(opt.exam){qs=pickRound(examPool(),12);label="مسار الامتحان"}
+  else{qs=pickRound(pool(LEVELS[opt.lvl].c),10);label=LEVELS[opt.lvl].t}
+  var queue=qs.map(function(q){return{q:q,need:1,missed:false}}),total=queue.length,cleared=0,score=0,streak=0,firstTry=0,errors=0,missedList=[];
+  function next(){
+    stopTimer();
+    if(!queue.length)return finish();
+    var item=queue[0],q=item.q,left=secs,locked=false;
+    var opts=q.o.length===2?q.o:shuffle(q.o);
+    app.textContent="";app.appendChild(topbar(true));
+    var mult=streak>=6?3:streak>=3?2:1;
+    app.appendChild(h("div",{class:"hud"},[txt("span","pill",label),txt("span","combo",mult>1?"🔥 ×"+mult:""),txt("span","pill","✔ "+cleared+"/"+total)]));
+    app.appendChild(h("div",{class:"timer"},[h("i",{style:"transform:scaleX("+(cleared/total)+");background:var(--mint)"})]));
+    var bar=h("i");app.appendChild(h("div",{class:"timer"},[bar]));
+    app.appendChild(h("div",{class:"qcard"+(item.missed?" again":"")},[txt("span","qcat",item.missed?"🔁 سؤال عاد إليك · "+q.c:q.c),txt("div","qtext",q.q)]));
+    var box=h("div",{class:"opts"}),note=txt("div","note","");
+    var K=["أ","ب","ج","د"];
+    var btns=opts.map(function(o,k){var b=h("button",{class:"opt",on:{click:function(){answer(o,b)}}},[txt("span","k",K[k]),h("span",{},[o])]);box.appendChild(b);return b});
+    app.appendChild(box);app.appendChild(note);
+    function answer(o,b){
+      if(locked)return;locked=true;stopTimer();
+      var good=o===q.a,k=key(q);SAVE.seen[k]=1;
+      btns.forEach(function(x,j){x.disabled=true;if(opts[j]===q.a)x.classList.add("ok");else if(x!==b)x.classList.add("dim")});
+      queue.shift();
+      if(good){
+        streak++;var m2=streak>=6?3:streak>=3?2:1,pts=(item.missed?5:10)*m2+Math.max(0,Math.round(left/2));score+=pts;SFX.ok();
+        if(streak===3||streak===6||streak===10)confetti(60);
+        SAVE.box[k]=(SAVE.box[k]||0)+1;item.need--;
+        if(item.need>0){queue.splice(Math.min(queue.length,4),0,item);note.textContent="صحيح! +"+pts+" · سيعود مرة أخيرة للتثبيت"}
+        else{cleared++;if(!item.missed)firstTry++;note.textContent=(streak>=3?"🔥 "+streak+" متتالية! ":"صحيح! ")+"+"+pts+(q.n?" · "+q.n:"")}
+        SAVE.xp+=pts;persist();setTimeout(next,item.need>0?1300:1000);
+      }else{
+        streak=0;errors++;SFX.bad();if(b)b.classList.add("bad");SAVE.box[k]=0;persist();
+        if(!item.missed)missedList.push(q);item.missed=true;item.need=2;
+        queue.splice(Math.min(queue.length,2+Math.floor(Math.random()*2)),0,item);
+        var card=h("div",{class:"explain"},[txt("span","qcat",o==null?"انتهى الوقت":"الجواب الصحيح"),txt("div","ans",q.a),q.n?txt("div","lead",q.n):null,
+          txt("p","lead","احفظها الآن: سيعود هذا السؤال بعد قليل، ويجب أن تجيبه صحيحًا مرتين."),
+          h("button",{class:"btn",on:{click:next}},["حفظتها، كمّل"])]);
+        app.appendChild(card);card.scrollIntoView({behavior:REDUCED?"auto":"smooth",block:"center"});
+      }
+    }
+    timerId=setInterval(function(){left-=.1;bar.style.transform="scaleX("+Math.max(0,left/secs)+")";if(left<secs*.3)bar.style.background="var(--rose)";
+      if(left<=3&&Math.abs(left-Math.round(left))<.05)SFX.tick();if(left<=0)answer(null,null)},100);
+  }
+  function finish(){
+    stopTimer();pushScore();
+    var acc=total?firstTry/total:0;
+    SFX.win();confetti(130);
+    app.textContent="";app.appendChild(topbar(true));
+    var rk=rank(SAVE.xp),em=masteryOf(examPool());
+    var r=h("div",{class:"result"},[txt("div","big",acc>=.9?"أسطوري!":acc>=.7?"ممتاز!":"أتقنت الجولة!"),
+      txt("p","lead",total+" أسئلة أتقنتها · "+firstTry+" من أول مرة · "+errors+" أخطاء صُحّحت · +"+score+" نقطة"),
+      txt("p","lead","رتبتك: "+rk.name+(rk.next?" · بقي "+(rk.next[0]-SAVE.xp)+" نقطة إلى «"+rk.next[1]+"»":"")),
+      h("div",{class:"row"},[ring(em.m,em.n)]),txt("p","lead","إتقان مسار الامتحان")]);
+    r.appendChild(h("div",{class:"row"},[h("button",{class:"btn",on:{click:function(){play(opt)}}},["جولة أخرى"]),
+      h("button",{class:"btn ghost",on:{click:board}},["جدول المتسابقين"]),h("button",{class:"btn ghost",on:{click:home}},["الرئيسية"])]));
+    if(missedList.length){r.appendChild(txt("p","lead","هذه أخطأت فيها، راجعها مرة أخيرة:"));missedList.forEach(function(q){r.appendChild(h("div",{class:"wrong"},[q.q+" ",h("b",{},[q.a])]))})}
+    app.appendChild(r);
+  }
+  next();
+}
+
+/* ---------- match books ↔ authors ---------- */
+var ROUNDS=(function(){var left=shuffle(BOOKS),out=[];while(left.length){var r=[],used=[];left=left.filter(function(b){if(r.length<6&&used.indexOf(b[1])<0){r.push(b);used.push(b[1]);return false}return true});out.push(r)}return out})();
+function match(ri){
+  stopTimer();app.textContent="";app.appendChild(topbar(true));
+  var round=ROUNDS[ri],sel=null,done=0,miss=0,t0=Date.now();
+  app.appendChild(h("h1",{},["مطابقة الكتب "+(ri+1)+"/"+ROUNDS.length]));
+  app.appendChild(txt("p","lead","اختر كتابًا ثم مؤلّفه. الخطأ يُحسب، والسرعة تهمّ."));
+  var g=h("div",{class:"grid"});
+  g.appendChild(txt("div","colh","الكتاب"));g.appendChild(txt("div","colh","المؤلّف"));
+  var bs=shuffle(round),as=shuffle(round);
+  for(var k=0;k<round.length;k++){g.appendChild(card(bs[k],"book"));g.appendChild(card(as[k],"auth"))}
+  app.appendChild(g);
+  function card(b,kind){
+    var c=h("button",{class:"cardm "+kind},[kind==="book"?b[0]:b[1]]);
+    c.addEventListener("click",function(){
+      if(c.classList.contains("gone"))return;SFX.tap();
+      if(!sel||sel.kind===kind){if(sel)sel.el.classList.remove("sel");sel={el:c,kind:kind,b:b};c.classList.add("sel");return}
+      if(sel.b[1]===b[1]){sel.el.classList.add("gone");c.classList.add("gone");SFX.ok();done++;sel=null;
+        if(done===round.length){var sec=Math.round((Date.now()-t0)/1000),pts=Math.max(10,60-miss*10);SAVE.xp+=pts;persist();confetti(90);SFX.win();
+          setTimeout(function(){app.textContent="";app.appendChild(topbar(true));
+            var r=h("div",{class:"result"},[txt("div","big","جولة "+(ri+1)+" تمّت"),txt("p","lead",sec+" ثانية · "+miss+" أخطاء · +"+pts+" نقطة")]);
+            r.appendChild(h("div",{class:"row"},[ri+1<ROUNDS.length?h("button",{class:"btn",on:{click:function(){match(ri+1)}}},["الجولة التالية"]):h("button",{class:"btn",on:{click:function(){match(0)}}},["من البداية"]),h("button",{class:"btn ghost",on:{click:function(){match(ri)}}},["إعادة"])]));
+            round.forEach(function(b){r.appendChild(h("div",{class:"wrong"},[b[0]+" ← ",h("b",{},[b[1]])]))});
+            app.appendChild(r)},700)}}
+      else{miss++;SFX.bad();var o=sel.el;o.classList.remove("sel");o.classList.add("bad");c.classList.add("bad");setTimeout(function(){o.classList.remove("bad");c.classList.remove("bad")},400);sel=null}
+    });
+    return c;
+  }
+}
+
+/* ---------- makki / madani sprint ---------- */
+function swipe(){
+  stopTimer();app.textContent="";app.appendChild(topbar(true));
+  var deck=shuffle(MADANI.map(function(s){return[s,"مدنية"]}).concat(shuffle(MAKKI.map(function(s){return[s,"مكية"]})).slice(0,30))),i=0,score=0,left=45,missed=[];
+  var hud=h("div",{class:"hud"},[txt("span","pill","⏱️ 45"),txt("span","pill","✅ 0")]);app.appendChild(hud);
+  var bar=h("i");app.appendChild(h("div",{class:"timer"},[bar]));
+  var s=txt("div","sura","");app.appendChild(s);var fb=txt("div","note","");fb.style.textAlign="center";
+  app.appendChild(h("div",{class:"two"},[h("button",{class:"btn sea",on:{click:function(){ans("مكية")}}},["مكية"]),h("button",{class:"btn",on:{click:function(){ans("مدنية")}}},["مدنية"])]));
+  app.appendChild(fb);
+  function show(){if(i>=deck.length)deck=deck.concat(shuffle(deck)),0;s.textContent=deck[i][0];s.style.animation="none";s.offsetWidth;s.style.animation=""}
+  function ans(a){if(left<=0)return;var d=deck[i];if(a===d[1]){score++;SFX.ok();fb.style.color="var(--mint)";fb.textContent="✓"}else{SFX.bad();missed.push(d);fb.style.color="var(--rose)";fb.textContent=d[0]+" "+d[1]}
+    hud.lastChild.textContent="✅ "+score;i++;show()}
+  show();
+  timerId=setInterval(function(){left-=.1;bar.style.transform="scaleX("+Math.max(0,left/45)+")";hud.firstChild.textContent="⏱️ "+Math.ceil(Math.max(0,left));
+    if(left<=0){stopTimer();var best=SAVE.best.swipe||0;SAVE.best.swipe=Math.max(best,score);SAVE.xp+=score*5;persist();if(score>best)confetti(100),SFX.win();
+      app.textContent="";app.appendChild(topbar(true));
+      var r=h("div",{class:"result"},[txt("div","big",score+" إجابة صحيحة"),txt("p","lead",score>best?"رقم قياسي جديد!":"أفضل نتيجة: "+best),
+        txt("p","lead","تذكّر: 4 + 2 + 2 + 3 + 8 + 1 = 20 سورة مدنية")]);
+      r.appendChild(h("div",{class:"row"},[h("button",{class:"btn",on:{click:swipe}},["مرة أخرى"]),h("button",{class:"btn ghost",on:{click:home}}, ["الرئيسية"])]));
+      missed.forEach(function(d){r.appendChild(h("div",{class:"wrong"},["سورة "+d[0]+": ",h("b",{},[d[1]])]))});
+      app.appendChild(r)}},100);
+}
+home();
+</script>

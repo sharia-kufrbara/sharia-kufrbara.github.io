@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مكتبة طلبة أكاديمية العلوم الشرعية · كفر برا</title>
+<meta name="description" content="مكتبة طلابية لمواد أكاديمية العلوم الشرعية في كفر برا: تلخيصات، بودكاستات، كتب وعروض مرتبة حسب المساق والموضوع. صدقة جارية.">
+<meta property="og:title" content="مكتبة طلبة أكاديمية العلوم الشرعية · كفر برا">
+<meta property="og:description" content="كل مواد المساقات في مكان واحد، مرتبة حسب العناوين. صدقة جارية عن أرواح جميع موتى المسلمين.">
+<link rel="icon" href="logo.png">
+<meta property="og:image" content="https://sharia-kufrbara.github.io/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F3F7FB;--card:#FFFFFF;--ink:#14263B;--mute:#5A6B7D;--line:#D8E3EE;
+  --green:#1C6FB0;--green-deep:#12335A;--gold:#1287BF;--gold-soft:#DDF1FB;--rose:#A63D2F;
+  --display:"Amiri","Times New Roman",serif;--body:"IBM Plex Sans Arabic",system-ui,sans-serif;
+  --shadow:0 1px 0 rgba(27,41,37,.04),0 8px 24px -14px rgba(27,41,37,.25);
+}
+@media (prefers-color-scheme:dark){:root{
+  --paper:#0C1522;--card:#13202F;--ink:#E6EEF6;--mute:#93A4B6;--line:#22344A;
+  --green:#3C9BDD;--green-deep:#0E2A4A;--gold:#5CC4F0;--gold-soft:#12304A;--rose:#E08475;
+  --shadow:0 8px 24px -14px rgba(0,0,0,.7);
+}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.75;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:6px}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+
+/* masthead */
+.mast{background:var(--green-deep);color:#F2F7FC;position:relative;overflow:hidden}
+.mast::before{content:"";position:absolute;inset:0;opacity:.11;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'%3E%3Cg fill='none' stroke='%237FD3F5' stroke-width='1.2'%3E%3Crect x='21' y='21' width='30' height='30'/%3E%3Crect x='21' y='21' width='30' height='30' transform='rotate(45 36 36)'/%3E%3C/g%3E%3C/svg%3E")}
+.mast .wrap{position:relative;padding-top:18px;padding-bottom:44px}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:600;line-height:1.4;font-size:.98rem}
+.brand .logo{flex:none;background:#fff;border-radius:12px;padding:6px 8px;display:flex}.brand img{display:block;height:34px;width:auto}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:999px;padding:10px 20px;font-weight:600;cursor:pointer;text-decoration:none;white-space:nowrap;background:var(--green);color:#fff;transition:transform .15s,filter .15s}
+.btn:hover{filter:brightness(1.08)}.btn:active{transform:translateY(1px)}
+.btn.gold{background:#7FD3F5;color:#0E2A4A}
+.btn.ghost{background:transparent;color:var(--green);box-shadow:inset 0 0 0 1.5px var(--line)}
+.btn[disabled]{opacity:.55;cursor:wait}
+.hero{padding-top:38px;max-width:720px}
+.hero h1{font-family:var(--display);font-weight:700;font-size:clamp(2.2rem,6.2vw,3.7rem);line-height:1.25;margin:0 0 10px;text-wrap:balance}
+.hero p{margin:0;color:#C9D9EA;font-size:1.08rem;max-width:56ch}
+.sadaqa{display:inline-block;margin-top:20px;padding:6px 16px;border:1px solid rgba(127,211,245,.55);border-radius:999px;color:#7FD3F5;font-family:var(--display);font-size:1.12rem}
+.search{margin-top:26px;position:relative;max-width:560px}
+.search input{width:100%;border:0;border-radius:14px;padding:14px 18px;background:#FFFFFF;color:#14263B;font-size:1.02rem;box-shadow:0 10px 30px -12px rgba(0,0,0,.5)}
+.search input::placeholder{color:#7B857F}
+
+main{padding:34px 0 60px}
+.eyebrow{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:0 0 16px}
+.eyebrow h2{font-family:var(--display);font-size:1.9rem;margin:0;line-height:1.3}
+.eyebrow span{color:var(--mute)}
+.terms{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.term{border:1.5px solid var(--line);background:transparent;border-radius:999px;padding:7px 16px;cursor:pointer}
+.term[aria-pressed=true]{background:var(--green);border-color:var(--green);color:#fff}
+.term small{opacity:.8;margin-inline-start:6px}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.course{display:flex;flex-direction:column;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;text-decoration:none;box-shadow:var(--shadow);transition:transform .18s,border-color .18s}
+.course:hover{transform:translateY(-3px);border-color:var(--gold)}
+.course .num{font-family:var(--display);color:var(--gold);font-size:1.05rem}
+.course h3{font-family:var(--display);font-size:1.6rem;line-height:1.35;margin:0}
+.course p{margin:0;color:var(--mute);font-size:.95rem;flex:1}
+.course .meta{display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:12px;border-top:1px dashed var(--line);font-size:.92rem;color:var(--mute)}
+.course .meta b{color:var(--green)}
+.empty{border:1.5px dashed var(--line);border-radius:18px;padding:26px;text-align:center;color:var(--mute)}
+
+/* course page */
+.crumb{display:inline-flex;gap:6px;align-items:center;color:var(--mute);text-decoration:none;margin-bottom:8px}
+.crumb:hover{color:var(--green)}
+.chead h2{font-family:var(--display);font-size:clamp(2rem,5vw,2.8rem);margin:0 0 4px;line-height:1.3}
+.chead p{margin:0 0 18px;color:var(--mute)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.chip{border:1.5px solid var(--line);background:transparent;border-radius:999px;padding:4px 14px;cursor:pointer;font-size:.93rem}
+.chip[aria-pressed=true]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.topic{background:var(--card);border:1px solid var(--line);border-radius:18px;margin-bottom:14px;box-shadow:var(--shadow);overflow:hidden}
+.topic>header{display:flex;gap:14px;align-items:baseline;padding:16px 20px;border-bottom:1px solid var(--line)}
+.topic>header .n{font-family:var(--display);color:var(--gold);font-size:1.3rem;flex:none;min-width:1.4em}
+.topic>header h3{font-family:var(--display);font-size:1.4rem;margin:0;line-height:1.45}
+.item{padding:14px 20px;border-bottom:1px solid var(--line)}
+.item:last-child{border-bottom:0}
+.item .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.tag{flex:none;font-size:.8rem;font-weight:600;padding:2px 11px;border-radius:999px;background:var(--gold-soft);color:var(--gold)}
+.tag.k-podcast,.tag.k-video{background:color-mix(in srgb,var(--green) 14%,transparent);color:var(--green)}
+.tag.k-game,.tag.k-interactive{background:color-mix(in srgb,var(--rose) 14%,transparent);color:var(--rose)}
+.item .t{flex:1;min-width:200px}
+.item .t b{font-weight:600;display:block;line-height:1.5}
+.item .t small{color:var(--mute)}
+.item .act{display:flex;gap:8px;flex:none}
+.item .btn{padding:6px 16px;font-size:.93rem}
+.item audio,.item video{width:100%;margin-top:12px;border-radius:12px}
+.item video{max-height:70vh;background:#000}
+.none{padding:18px 20px;color:var(--mute);display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.linkbtn{background:none;border:0;padding:0;color:var(--green);font-weight:600;cursor:pointer;text-decoration:underline;text-underline-offset:4px}
+
+.callout{margin-top:40px;background:var(--green-deep);color:#F2F7FC;border-radius:22px;padding:28px;display:grid;gap:18px;grid-template-columns:1fr auto;align-items:center}
+.callout h2{font-family:var(--display);font-size:1.8rem;margin:0 0 4px}
+.callout p{margin:0;color:#C9D9EA}
+@media (max-width:640px){.callout{grid-template-columns:1fr}}
+
+footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--mute);font-size:.93rem;text-align:center}
+footer .dua{font-family:var(--display);font-size:1.25rem;color:var(--ink);margin-bottom:6px}
+
+/* upload dialog */
+dialog{border:0;border-radius:22px;padding:0;background:var(--card);color:var(--ink);width:min(560px,calc(100vw - 24px));max-height:calc(100dvh - 24px);box-shadow:0 30px 80px -20px rgba(0,0,0,.6)}
+dialog::backdrop{background:rgba(10,25,21,.6);backdrop-filter:blur(3px)}
+.dlg{padding:24px;display:flex;flex-direction:column;gap:14px}
+.dlg h2{font-family:var(--display);font-size:1.8rem;margin:0;line-height:1.3}
+.dlg p{margin:0;color:var(--mute);font-size:.95rem}
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-weight:600;font-size:.93rem}
+.field label i{font-style:normal;font-weight:400;color:var(--mute)}
+.field input,.field select{border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--paper);width:100%}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:520px){.two{grid-template-columns:1fr}}
+.hp{position:absolute;inset-inline-start:-9999px}
+.msg{border-radius:12px;padding:10px 14px;font-weight:500}
+.msg.ok{background:color-mix(in srgb,var(--green) 16%,transparent);color:var(--green)}
+.msg.err{background:color-mix(in srgb,var(--rose) 16%,transparent);color:var(--rose)}
+.dlg .end{display:flex;gap:10px;justify-content:flex-start;flex-wrap:wrap}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="mast">
+  <div class="wrap">
+    <div class="bar">
+      <a class="brand" href="#/">
+        <span class="logo"><img src="logo.png" alt="شعار أكاديمية العلوم الشرعية - كفر برا" width="64" height="37"></span>
+        <span>مكتبة طلبة أكاديمية العلوم الشرعية · كفر برا</span>
+      </a>
+      <button class="btn gold" data-upload>ارفع مادة</button>
+    </div>
+    <div class="hero" id="hero">
+      <h1>كل مواد المساقات في مكان واحد، مرتبة حسب العناوين</h1>
+      <p>تلخيصات، بودكاستات، كتب وعروض يجمعها الطلبة لبعضهم. خذ ما ينفعك، وارفع ما عندك لينتفع به غيرك.</p>
+      <span class="sadaqa">صدقة جارية عن أرواح جميع موتى المسلمين</span>
+      <div class="search"><input id="q" type="search" placeholder="ابحث عن موضوع أو مادة… مثل: ترجمة القرآن" aria-label="بحث في المواد"></div>
+    </div>
+  </div>
+</div>
+
+<main class="wrap" id="app"></main>
+
+<footer>
+  <div class="wrap">
+    <div class="dua">اللهم اجعله علمًا نافعًا وصدقةً جاريةً</div>
+    مبادرة طلابية غير رسمية، وليست الموقع الرسمي للأكاديمية. المواد من إعداد الطلبة، وبعضها مُولَّد بالذكاء الاصطناعي، فالمرجع دائمًا هو المحاضِر والكتاب المعتمد.
+  </div>
+</footer>
+
+<dialog id="dlg" aria-labelledby="dlgT">
+  <form class="dlg" id="form" novalidate>
+    <h2 id="dlgT">ارفع مادة للمكتبة</h2>
+    <p>تُراجَع المادة أولًا ثم تُنشر في مكانها. الترتيب أهم شيء: مساق واضح، موضوع واضح، وعنوان واضح.</p>
+    <div class="two">
+      <div class="field"><label for="fCourse">المساق</label><select id="fCourse" required></select></div>
+      <div class="field"><label for="fKind">نوع المادة</label><select id="fKind" required></select></div>
+    </div>
+    <div class="field"><label for="fTopic">الموضوع أو رقم المحاضرة</label><input id="fTopic" list="topics" required maxlength="120" placeholder="مثل: المحاضرة 3 - المكي والمدني"><datalist id="topics"></datalist></div>
+    <div class="field"><label for="fTitle">عنوان المادة</label><input id="fTitle" required maxlength="120" placeholder="مثل: تلخيص المكي والمدني"></div>
+    <div class="two">
+      <div class="field"><label for="fLect">المحاضِر <i>(اختياري)</i></label><input id="fLect" maxlength="80"></div>
+      <div class="field"><label for="fName">الاسم للذكر في الموقع <i>(اختياري)</i></label><input id="fName" maxlength="60" placeholder="يُترك فارغًا لمن لا يرغب"></div>
+    </div>
+    <div class="field"><label for="fFile">الملف <i>(PDF، Word، PowerPoint، صوت أو صورة · حتى 20MB)</i></label><input id="fFile" type="file" required accept=".pdf,.doc,.docx,.ppt,.pptx,.mp3,.m4a,.jpg,.jpeg,.png"></div>
+    <input class="hp" name="website" id="fHp" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <div id="msg" role="status"></div>
+    <div class="end">
+      <button class="btn" id="send" type="submit">إرسال للمراجعة</button>
+      <button class="btn ghost" type="button" id="close">إغلاق</button>
+    </div>
+  </form>
+</dialog>
+
+<script src="data.js"></script>
+<script>
+(function(){
+  var app = document.getElementById("app"), q = document.getElementById("q"), hero = document.getElementById("hero");
+  var term = TERMS[0].id, kindFilter = "";
+
+  function el(tag, attrs, kids){
+    var n = document.createElement(tag);
+    for (var k in attrs||{}) {
+      if (k === "text") n.textContent = attrs[k];
+      else if (k === "on") for (var ev in attrs.on) n.addEventListener(ev, attrs.on[ev]);
+      else if (attrs[k] !== false && attrs[k] != null) n.setAttribute(k, attrs[k]);
+    }
+    (kids||[]).forEach(function(c){ if (c) n.appendChild(c); });
+    return n;
+  }
+  function ar(n){ return String(n).replace(/\d/g, function(d){ return "٠١٢٣٤٥٦٧٨٩"[d]; }); }
+  function count(c){ return c.topics.reduce(function(s,t){ return s + t.items.length; }, 0); }
+  function countLabel(n){ return n === 0 ? "لا مواد بعد" : n === 1 ? "مادة واحدة" : n === 2 ? "مادتان" : n <= 10 ? ar(n) + " مواد" : ar(n) + " مادة"; }
+  function course(id){ return COURSES.filter(function(c){ return c.id === id; })[0]; }
+  function safeUrl(u){ return /^(https:\/\/|files\/|ulum-quran-kit\/)/.test(u) ? u : "#"; }
+
+  function itemRow(it){
+    var isAudio = it.kind === "podcast" && !/^https:/.test(it.url);
+    var isVideo = it.kind === "video" && !/^https:/.test(it.url);
+    var box = el("div", {class:"item"});
+    var sub = [it.note, it.name ? "من: " + it.name : "", it.lecturer ? "المحاضِر: " + it.lecturer : "", it.ai ? "مُولَّد بالذكاء الاصطناعي" : ""].filter(Boolean).join(" · ");
+    var act = el("div", {class:"act"});
+    if (isAudio || isVideo) {
+      act.appendChild(el("button", {class:"btn", type:"button", text: isAudio ? "استماع" : "مشاهدة", on:{click:function(){
+        var m = box.querySelector("audio,video");
+        if (!m) { m = el(isAudio ? "audio" : "video", {controls:"", preload:"metadata", src:safeUrl(it.url), playsinline:""}); box.appendChild(m); }
+        m.play().catch(function(){});
+      }}}));
+      act.appendChild(el("a", {class:"btn ghost", href:safeUrl(it.url), download:"", text:"تنزيل"}));
+    } else {
+      act.appendChild(el("a", {class:"btn", href:safeUrl(it.url), target:"_blank", rel:"noopener", text: it.kind === "game" ? "العب" : "فتح"}));
+    }
+    box.appendChild(el("div", {class:"row"}, [
+      el("span", {class:"tag k-" + it.kind, text: KINDS[it.kind] || "مادة"}),
+      el("div", {class:"t"}, [el("b", {text: it.title}), sub ? el("small", {text: sub}) : null]),
+      act
+    ]));
+    return box;
+  }
+
+  function home(){
+    hero.hidden = false;
+    app.replaceChildren();
+    var t = TERMS.filter(function(x){ return x.id === term; })[0];
+    app.appendChild(el("div", {class:"eyebrow"}, [el("h2", {text:"المساقات"}), el("span", {text: t.title + " · " + t.sub})]));
+    app.appendChild(el("div", {class:"terms"}, TERMS.map(function(x){
+      return el("button", {class:"term", type:"button", "aria-pressed": String(x.id === term), on:{click:function(){ term = x.id; home(); }}}, [document.createTextNode(x.title), el("small", {text:x.sub})]);
+    })));
+    var list = COURSES.filter(function(c){ return c.term === term; });
+    if (!list.length) { app.appendChild(el("div", {class:"empty", text:"تُضاف مساقات هذا الفصل عند بدايته، بإذن الله."})); }
+    else app.appendChild(el("div", {class:"grid"}, list.map(function(c, i){
+      var n = count(c);
+      return el("a", {class:"course", href:"#/c/" + c.id}, [
+        el("span", {class:"num", text:"المساق " + ar(i+1)}),
+        el("h3", {text:c.title}), el("p", {text:c.blurb}),
+        el("div", {class:"meta"}, [el("span", {text: ar(c.topics.length) + " عناوين"}), el("b", {text: countLabel(n)})])
+      ]);
+    })));
+    app.appendChild(el("section", {class:"callout"}, [
+      el("div", {}, [el("h2", {text:"عندك تلخيص أو مادة مفيدة؟"}), el("p", {text:"ارفعها باسم المساق والموضوع، تُراجَع ثم تُنشر في مكانها. والدال على الخير كفاعله."})]),
+      el("button", {class:"btn gold", type:"button", text:"ارفع مادة", on:{click:function(){ openUpload(); }}})
+    ]));
+  }
+
+  function coursePage(c){
+    hero.hidden = true;
+    app.replaceChildren();
+    app.appendChild(el("a", {class:"crumb", href:"#/", text:"→ كل المساقات"}));
+    app.appendChild(el("div", {class:"chead"}, [el("h2", {text:c.title}), el("p", {text: c.blurb + " " + countLabel(count(c)) + "."})]));
+    var kinds = {};
+    c.topics.forEach(function(t){ t.items.forEach(function(it){ kinds[it.kind] = 1; }); });
+    var ks = Object.keys(kinds);
+    if (ks.length > 1) app.appendChild(el("div", {class:"chips"}, [""].concat(ks).map(function(k){
+      return el("button", {class:"chip", type:"button", "aria-pressed": String(kindFilter === k), text: k ? KINDS[k] : "الكل", on:{click:function(){ kindFilter = k; coursePage(c); }}});
+    })));
+    c.topics.forEach(function(t, i){
+      var items = t.items.filter(function(it){ return !kindFilter || it.kind === kindFilter; });
+      if (kindFilter && !items.length) return;
+      var sec = el("section", {class:"topic"}, [el("header", {}, [el("span", {class:"n", text: ar(i+1)}), el("h3", {text:t.title})])]);
+      if (!items.length) sec.appendChild(el("div", {class:"none"}, [el("span", {text:"لا مواد بعد في هذا الموضوع."}), el("button", {class:"linkbtn", type:"button", text:"كن أول من يرفع", on:{click:function(){ openUpload(c.id, t.title); }}})]));
+      items.forEach(function(it){ sec.appendChild(itemRow(it)); });
+      app.appendChild(sec);
+    });
+    app.appendChild(el("section", {class:"callout"}, [
+      el("div", {}, [el("h2", {text:"ينقص هذا المساق شيء؟"}), el("p", {text:"ارفع تلخيصك أو أي مادة مساعدة، ولو صفحة واحدة."})]),
+      el("button", {class:"btn gold", type:"button", text:"ارفع مادة", on:{click:function(){ openUpload(c.id); }}})
+    ]));
+  }
+
+  function searchPage(term){
+    app.replaceChildren();
+    var words = term.toLowerCase().split(/\s+/).filter(Boolean), found = 0;
+    app.appendChild(el("div", {class:"eyebrow"}, [el("h2", {text:"نتائج البحث"}), el("span", {text:"«" + term + "»"})]));
+    COURSES.forEach(function(c){
+      c.topics.forEach(function(t){
+        var items = t.items.filter(function(it){
+          var hay = (c.title + " " + t.title + " " + it.title + " " + (KINDS[it.kind]||"")).toLowerCase();
+          return words.every(function(w){ return hay.indexOf(w) >= 0; });
+        });
+        if (!items.length) return;
+        found += items.length;
+        var sec = el("section", {class:"topic"}, [el("header", {}, [el("h3", {}, [el("a", {href:"#/c/" + c.id, text: c.title + " · " + t.title})])])]);
+        items.forEach(function(it){ sec.appendChild(itemRow(it)); });
+        app.appendChild(sec);
+      });
+    });
+    if (!found) app.appendChild(el("div", {class:"empty", text:"لا نتائج. يمكن تجربة كلمة أخرى، أو رفع المادة إن كانت عندك."}));
+  }
+
+  function route(){
+    var m = location.hash.match(/^#\/c\/([\w-]+)/), c = m && course(m[1]);
+    if (q.value.trim()) { hero.hidden = false; return searchPage(q.value.trim()); }
+    kindFilter = c && route.last === c.id ? kindFilter : "";
+    route.last = c ? c.id : "";
+    if (c) coursePage(c); else home();
+    window.scrollTo(0, 0);
+  }
+  window.addEventListener("hashchange", function(){ q.value = ""; route(); });
+  q.addEventListener("input", route);
+
+  /* upload */
+  var dlg = document.getElementById("dlg"), form = document.getElementById("form"), msg = document.getElementById("msg"), send = document.getElementById("send");
+  var fCourse = document.getElementById("fCourse"), fKind = document.getElementById("fKind"), topics = document.getElementById("topics");
+  COURSES.concat([{id:"other", title:"مساق آخر (يُكتب اسمه في الموضوع)", topics:[]}]).forEach(function(c){ fCourse.appendChild(el("option", {value:c.id, text:c.title})); });
+  ["summary","podcast","book","slides","exam","video"].forEach(function(k){ fKind.appendChild(el("option", {value:k, text:KINDS[k]})); });
+  function fillTopics(){ var c = course(fCourse.value); topics.replaceChildren.apply(topics, (c ? c.topics : []).map(function(t){ return el("option", {value:t.title}); })); }
+  fCourse.addEventListener("change", fillTopics);
+  function say(kind, text){ msg.className = kind ? "msg " + kind : ""; msg.textContent = text || ""; }
+  function openUpload(cid, topic){
+    if (cid) fCourse.value = cid;
+    fillTopics();
+    if (topic) document.getElementById("fTopic").value = topic;
+    say();
+    if (!CONFIG.api) { say("err", "الرفع المباشر يُفعَّل قريبًا بإذن الله. حاليًا تُرسَل المواد لمسؤول المجموعة مع اسم المساق والموضوع."); send.disabled = true; }
+    dlg.showModal();
+  }
+  document.querySelectorAll("[data-upload]").forEach(function(b){ b.addEventListener("click", function(){ openUpload((location.hash.match(/^#\/c\/([\w-]+)/)||[])[1]); }); });
+  document.getElementById("close").addEventListener("click", function(){ dlg.close(); });
+  dlg.addEventListener("click", function(e){ if (e.target === dlg) dlg.close(); });
+
+  form.addEventListener("submit", function(e){
+    e.preventDefault();
+    if (!CONFIG.api) return;
+    var file = document.getElementById("fFile").files[0];
+    var topic = document.getElementById("fTopic").value.trim(), title = document.getElementById("fTitle").value.trim();
+    if (!topic || !title || !file) return say("err", "المساق، الموضوع، العنوان والملف كلها مطلوبة.");
+    if (file.size > 20 * 1024 * 1024) return say("err", "الملف أكبر من 20MB. يمكن ضغطه أو تقسيمه ثم رفعه.");
+    send.disabled = true; say("ok", "جارٍ الرفع… قد يستغرق دقيقة للملفات الكبيرة.");
+    var r = new FileReader();
+    r.onerror = function(){ send.disabled = false; say("err", "تعذّرت قراءة الملف."); };
+    r.onload = function(){
+      fetch(CONFIG.api, {method:"POST", body: JSON.stringify({
+        course: fCourse.value, kind: fKind.value, topic: topic, title: title,
+        lecturer: document.getElementById("fLect").value, name: document.getElementById("fName").value,
+        website: document.getElementById("fHp").value,
+        fileName: file.name, mime: file.type, b64: String(r.result).split(",")[1]
+      })}).then(function(x){ return x.json(); }).then(function(j){
+        send.disabled = false;
+        if (!j.ok) return say("err", "لم يُقبل الملف. يُرجى التأكد من النوع والحجم ثم المحاولة مرة أخرى.");
+        form.reset(); fillTopics();
+        say("ok", "وصلت المادة، جزاكم الله خيرًا. تُنشر بعد المراجعة.");
+      }).catch(function(){ send.disabled = false; say("err", "تعذّر الرفع. يُرجى التحقق من الاتصال والمحاولة مرة أخرى."); });
+    };
+    r.readAsDataURL(file);
+  });
+
+  /* approved student uploads */
+  function mergeApproved(items){
+    items.forEach(function(it){
+      var c = course(it.course); if (!c || !KINDS[it.kind] || !/^https:\/\/drive\.google\.com\//.test(it.url)) return;
+      var t = c.topics.filter(function(x){ return x.title === it.topic; })[0];
+      if (!t) { t = {title: String(it.topic), items: []}; c.topics.push(t); }
+      t.items.push({kind: it.kind, title: String(it.title), url: it.url, name: it.name ? String(it.name) : "", lecturer: it.lecturer ? String(it.lecturer) : ""});
+    });
+    route();
+  }
+  if (CONFIG.api) fetch(CONFIG.api).then(function(x){ return x.json(); }).then(function(j){ if (j.ok) mergeApproved(j.items || []); }).catch(function(){});
+
+  route();
+})();
+</script>
+</body>
+</html>
