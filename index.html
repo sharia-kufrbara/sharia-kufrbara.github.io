@@ -60,6 +60,7 @@ main{padding:34px 0 60px}
 .term{border:1.5px solid var(--line);background:transparent;border-radius:999px;padding:7px 16px;cursor:pointer}
 .term[aria-pressed=true]{background:var(--green);border-color:var(--green);color:#fff}
 .term small{opacity:.8;margin-inline-start:6px}
+.tnote{margin:-8px 0 20px;padding:10px 14px;border-inline-start:3px solid var(--gold);background:color-mix(in srgb,var(--gold) 10%,transparent);border-radius:10px;font-size:.95rem}
 
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
 .course{display:flex;flex-direction:column;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;text-decoration:none;box-shadow:var(--shadow);transition:transform .18s,border-color .18s}
@@ -87,7 +88,7 @@ main{padding:34px 0 60px}
 .item:last-child{border-bottom:0}
 .item .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
 .tag{flex:none;font-size:.8rem;font-weight:600;padding:2px 11px;border-radius:999px;background:var(--gold-soft);color:var(--gold)}
-.tag.k-podcast,.tag.k-video{background:color-mix(in srgb,var(--green) 14%,transparent);color:var(--green)}
+.tag.k-podcast,.tag.k-video,.tag.k-card{background:color-mix(in srgb,var(--green) 14%,transparent);color:var(--green)}
 .tag.k-game,.tag.k-interactive{background:color-mix(in srgb,var(--rose) 14%,transparent);color:var(--rose)}
 .item .t{flex:1;min-width:200px}
 .item .t b{font-weight:600;display:block;line-height:1.5}
@@ -205,7 +206,7 @@ dialog::backdrop{background:rgba(10,25,21,.6);backdrop-filter:blur(3px)}
     var isAudio = it.kind === "podcast" && !/^https:/.test(it.url);
     var isVideo = it.kind === "video" && !/^https:/.test(it.url);
     var box = el("div", {class:"item"});
-    var sub = [it.note, it.name ? "من: " + it.name : "", it.lecturer ? "المحاضِر: " + it.lecturer : "", it.ai ? "مُولَّد بالذكاء الاصطناعي" : ""].filter(Boolean).join(" · ");
+    var sub = [it.note, it.name ? "من: " + it.name : "", it.lecturer ? "المحاضِر: " + it.lecturer : "", it.ai ? "مُولَّد بالذكاء الاصطناعي" : "", it.arch ? "من أرشيف دفعة سابقة" : ""].filter(Boolean).join(" · ");
     var act = el("div", {class:"act"});
     if (isAudio || isVideo) {
       act.appendChild(el("button", {class:"btn", type:"button", text: isAudio ? "استماع" : "مشاهدة", on:{click:function(){
@@ -233,6 +234,7 @@ dialog::backdrop{background:rgba(10,25,21,.6);backdrop-filter:blur(3px)}
     app.appendChild(el("div", {class:"terms"}, TERMS.map(function(x){
       return el("button", {class:"term", type:"button", "aria-pressed": String(x.id === term), on:{click:function(){ term = x.id; home(); }}}, [document.createTextNode(x.title), el("small", {text:x.sub})]);
     })));
+    if (t.note) app.appendChild(el("p", {class:"tnote", text:t.note}));
     var list = COURSES.filter(function(c){ return c.term === term; });
     if (!list.length) { app.appendChild(el("div", {class:"empty", text:"تُضاف مساقات هذا الفصل عند بدايته، بإذن الله."})); }
     else app.appendChild(el("div", {class:"grid"}, list.map(function(c, i){
@@ -309,7 +311,7 @@ dialog::backdrop{background:rgba(10,25,21,.6);backdrop-filter:blur(3px)}
   var dlg = document.getElementById("dlg"), form = document.getElementById("form"), msg = document.getElementById("msg"), send = document.getElementById("send");
   var fCourse = document.getElementById("fCourse"), fKind = document.getElementById("fKind"), topics = document.getElementById("topics");
   COURSES.concat([{id:"other", title:"مساق آخر (يُكتب اسمه في الموضوع)", topics:[]}]).forEach(function(c){ fCourse.appendChild(el("option", {value:c.id, text:c.title})); });
-  ["summary","podcast","book","slides","exam","video"].forEach(function(k){ fKind.appendChild(el("option", {value:k, text:KINDS[k]})); });
+  ["summary","card","podcast","book","slides","exam","video"].forEach(function(k){ fKind.appendChild(el("option", {value:k, text:KINDS[k]})); });
   function fillTopics(){ var c = course(fCourse.value); topics.replaceChildren.apply(topics, (c ? c.topics : []).map(function(t){ return el("option", {value:t.title}); })); }
   fCourse.addEventListener("change", fillTopics);
   function say(kind, text){ msg.className = kind ? "msg " + kind : ""; msg.textContent = text || ""; }
