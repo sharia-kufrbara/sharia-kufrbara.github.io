@@ -96,10 +96,16 @@ window.COURSES = [
         title: "تلخيص المادة",
         items: [
           { kind: "summary", title: "تلخيص محاضرات العقيدة 1", note: "PDF · 28 صفحة", url: "files/aqida-1/archive-summary.pdf", arch: true },
-          { kind: "summary", title: "مادة الامتحان الفصلي: الإيمان والإسلام وما بعدهما", note: "PDF · 18 صفحة", url: "files/aqida-1/archive-final-material.pdf", arch: true }
+          { kind: "summary", title: "مادة الامتحان الفصلي: الإيمان والإسلام وما بعدهما", note: "PDF · 18 صفحة", url: "files/aqida-1/archive-final-material.pdf", arch: true },
+          { kind: "interactive", title: "مفكرة أساسيات العقيدة الإسلامية ومباحثها: اسأل المادة، فيديو شرح واختبار", note: "NotebookLM · تُفتح بحساب جوجل", url: "https://notebooklm.link.google/3vdzmXzpsVGL" }
         ]
       },
-      { title: "الإيمان بالملائكة ووظائفهم", items: [] }
+      {
+        title: "الإيمان بالملائكة ووظائفهم",
+        items: [
+          { kind: "summary", title: "تلخيص: وظائف الملائكة وأصنافهم", note: "PDF · 5 صفحات", url: "files/aqida-1/wazaif-al-malaika-summary.pdf", ai: true }
+        ]
+      }
     ]
   },
   {
