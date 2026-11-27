@@ -432,6 +432,12 @@ window.COURSES = [
     blurb: "أحكام اليمين والنذر.",
     topics: [
       {
+        title: "الكفارات والنذر",
+        items: [
+          { kind: "slides", title: "الأيمان والنذور: الكفارات والنذر", note: "PDF · 22 شريحة", url: "files/ayman-nudhur/kaffarat-nadhr.pdf" }
+        ]
+      },
+      {
         title: "أسئلة",
         items: [
           { kind: "exam", title: "أسئلة في موضوع الأيمان والنذور مع أجوبتها", note: "PDF · 8 صفحات", url: "files/ayman-nudhur/questions.pdf", arch: true },
