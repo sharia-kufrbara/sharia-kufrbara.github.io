@@ -97,7 +97,8 @@ window.COURSES = [
         items: [
           { kind: "summary", title: "تلخيص محاضرات العقيدة 1", note: "PDF · 28 صفحة", url: "files/aqida-1/archive-summary.pdf", arch: true },
           { kind: "summary", title: "مادة الامتحان الفصلي: الإيمان والإسلام وما بعدهما", note: "PDF · 18 صفحة", url: "files/aqida-1/archive-final-material.pdf", arch: true },
-          { kind: "interactive", title: "مفكرة أساسيات العقيدة الإسلامية ومباحثها: اسأل المادة، فيديو شرح واختبار", note: "NotebookLM · تُفتح بحساب جوجل", url: "https://notebooklm.link.google/3vdzmXzpsVGL" }
+          { kind: "interactive", title: "مفكرة أساسيات العقيدة الإسلامية ومباحثها: اسأل المادة، فيديو شرح واختبار", note: "NotebookLM · تُفتح بحساب جوجل", url: "https://notebooklm.link.google/3vdzmXzpsVGL" },
+          { kind: "exam", title: "امتحان تدريبي صعب جدًّا: 50 سؤالًا اختيار من متعدد", note: "PDF · المحاضرات ص 15 إلى 57 ووظائف الملائكة · المفتاح في آخر الملف", url: "files/aqida-1/mcq-exam-50.pdf", ai: true }
         ]
       },
       {
